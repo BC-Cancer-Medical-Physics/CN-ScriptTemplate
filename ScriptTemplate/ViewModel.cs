@@ -19,9 +19,13 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using System.Xml.Serialization;
+using OfficeOpenXml;
+using OfficeOpenXml.Drawing.Style.Fill;
+using OfficeOpenXml.Style;
 using PropertyChanged;
 using VMS.TPS.Common.Model.API;
 using VMS.TPS.Common.Model.Types;
+
 
 [assembly: ESAPIScript(IsWriteable = true)]
 
@@ -31,6 +35,28 @@ namespace ESAPIScript
     public class SometimesObservableCollection<T> : ObservableCollection<T>
     {
         private bool _suppressNotfication = false;
+
+        public SometimesObservableCollection() { }
+
+        public SometimesObservableCollection(ObservableCollection<T> collection)
+        {
+            CopyFrom(collection);
+        }
+
+        private void CopyFrom(IEnumerable<T> collection)
+        {
+            IList<T> items = base.Items;
+            if (collection == null || items == null)
+            {
+                return;
+            }
+
+            foreach (T item in collection)
+            {
+                items.Add(item);
+            }
+        }
+
         public bool SuppressNotification
         {
             get { return _suppressNotfication; }
@@ -159,6 +185,37 @@ namespace ESAPIScript
                 Helpers.SeriLog.LogError(string.Format("{0}\r\n{1}\r\n{2}", ex.Message, ex.InnerException, ex.StackTrace));
                 MessageBox.Show(string.Format("{0}\r\n{1}\r\n{2}", ex.Message, ex.InnerException, ex.StackTrace));
             }
+        }
+
+        public ICommand buttonCommand
+        {
+            get
+            {
+                return new DelegateCommand(doSomething); 
+            }
+        }
+
+        private async void doSomething(object obj = null)
+        {
+            structureIds = new SometimesObservableCollection<string>(Helpers.sortOptions(_selectedStructureId, structureIds));
+            double maxVolume = double.NaN;
+            IEnumerable<string> C = Enumerable.Empty<string>();
+            await ew.AsyncRunStructureContext((pat, ss, ui) =>
+            {
+                maxVolume = ss.Structures.Select(x => x.Volume).Aggregate((double)0, (vol, minVol) =>  vol > minVol ? vol : minVol );
+                C = pat.Courses.Where(x => x.PlanSetups.Any(y => y.StructureSet.Structures.Select(z=>z.Id).Contains("PTV"))).Select(x=>x.Id).ToList();
+                using (var sw = new StreamWriter("myData.txt"))
+                {
+                    sw.WriteLine(maxVolume.ToString());
+                    foreach (string courseId in C)
+                    {
+                        sw.WriteLine(courseId);
+                    }
+                    
+                }
+            });
+            MessageBox.Show(maxVolume.ToString());
+           
         }
 
         public ICommand StartCommand
