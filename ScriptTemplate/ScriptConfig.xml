@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ScriptConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xsi:noNamespaceSchemaLocation="\\spvaimapcn\data$\Apps\PluginLauncher\Schemas\ScriptConfig.xsd">
+  <version number="0.1"/>
+  <Settings Setting1="Absolute" Setting2="100" Setting3="true"/>
+</ScriptConfig>

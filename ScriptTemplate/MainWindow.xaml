@@ -1,0 +1,56 @@
+﻿<Window x:Class="ESAPIScript.ScriptWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        x:Name="MainScriptWindow"
+       xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ESAPIScript"
+        xmlns:converters="clr-namespace:ESAPIScript.Converters"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=local:ViewModel, IsDesignTimeCreatable=True}"
+        Title="ESAPI GUI Template (v1.0)" Height="600" Width="1050" ResizeMode="NoResize">
+    <Window.Resources>
+        <converters:SortStructuresConverter x:Key="SortStructuresConverter"/>
+        <converters:VisibilityConverter x:Key="VisibilityConverter"/>
+        <converters:VisibilityInverseConverter x:Key="VisibilityInverseConverter"/>
+        <converters:VisibilityMultiConverter x:Key="VisibilityMultiConverter"/>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Active structure set:" FontSize="16" Margin="10,0,0,0"/>
+            <TextBlock Grid.Column="1" Text="{Binding currentStructureSetId, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="10,0,0,0"/>
+        </Grid>
+        <Border Grid.Row="1" Background="CornflowerBlue" CornerRadius="4" HorizontalAlignment="Stretch" Margin="10,10,10,0" Height="5"/>
+        <Grid Grid.Row="2" Margin="10,10,10,10" VerticalAlignment="Stretch">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Text="List of structures in this structure set:" FontWeight="Bold" Margin="0,0,0,0" />
+            <ListView Grid.Row="1" ItemsSource="{Binding structureIds, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0" SelectedItem="{Binding selectedStructureId, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"/>
+            <Grid Grid.Row="2" Background="PapayaWhip">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="The volume of the selected structure is:"/>
+                <TextBlock Grid.Column="1" Text="{Binding structureVolumeString, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,0,0" HorizontalAlignment="Left"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
+
+    
