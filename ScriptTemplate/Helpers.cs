@@ -11,6 +11,7 @@ using System.Reflection;
 using System.ComponentModel;
 using Serilog;
 using System.Diagnostics;
+using System.Collections.ObjectModel;
 
 namespace ESAPIScript
 {
@@ -101,6 +102,37 @@ namespace ESAPIScript
 
         }
 
+        public static ObservableCollection<string> sortOptions(string matchString, ObservableCollection<string> AvailableOptions)
+        {
+            if (matchString == null)
+            {
+                return AvailableOptions;
+            }
+            if (AvailableOptions.Count != 0)
+            {
+                double[] LD = new double[AvailableOptions.Count];
+                for (int i = 0; i < AvailableOptions.Count; i++)
+                {
+                    LD[i] = double.PositiveInfinity;
+                }
+                int c = 0;
+                foreach (string S in AvailableOptions)
+                {
+                    var CurrentId = matchString.ToUpper();
+                    var stripString = S.Replace(@"B_", @"").Replace(@"_", @"").ToUpper();
+                    var CompString = CurrentId.Replace(@"B_", @"").Replace(@"_", @"").ToUpper();
+                    double LDist = Helpers.LevenshteinDistance.Compute(stripString, CompString);
+                    if (stripString.ToUpper().Contains(CompString) && stripString != "" && CompString != "")
+                        LDist = Math.Min(LDist, 1.5);
+                    LD[c] = LDist;
+                    c++;
+                }
+                var sortedOptions = new ObservableCollection<string>(AvailableOptions.Zip(LD, (s, l) => new { key = s, LD = l }).OrderBy(x => x.LD).Select(x => x.key).ToList());
+                return sortedOptions;
+            }
+            else
+                return AvailableOptions;
+        }
         public static class OrientationInvariantMargins
         {
             public static AxisAlignedMargins getAxisAlignedMargins(PatientOrientation patientOrientation, double rightMargin, double antMargin, double infMargin, double leftMargin, double postMargin, double supMargin)

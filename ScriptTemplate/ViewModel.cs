@@ -104,7 +104,7 @@ namespace ESAPIScript
 
         private async void DisplayStructureMeanHU()
         {
-            await ew.AsyncRunStructureContext((pat, ss, ui) =>
+            await ew.AsyncRunStructureContext((pat, ss) =>
             {
                 var selectedStructure = ss.Structures.FirstOrDefault(x => string.Equals(x.Id, _selectedStructureId, StringComparison.OrdinalIgnoreCase));
                 if (selectedStructure != null)
@@ -126,9 +126,11 @@ namespace ESAPIScript
                         });
                     }
                 }
-               
+
             });
         }
+
+        private Dispatcher ui;
 
         public EsapiWorker ew = null;
 
@@ -144,11 +146,10 @@ namespace ESAPIScript
 
         }
 
-
         public ViewModel(EsapiWorker _ew = null)
         {
             ew = _ew;
-            ew.ui = Dispatcher.CurrentDispatcher;
+            ui = Dispatcher.CurrentDispatcher;
             Initialize();
         }
 
@@ -163,7 +164,9 @@ namespace ESAPIScript
                 // Initialize other GUI settings
 
                 string ew_currentStructureSetId = string.Empty;
-                await ew.AsyncRunStructureContext((pat, ss, ui) =>
+
+                structureIds.Clear();
+                await ew.AsyncRunStructureContext((pat, ss) =>
                 {
                     ew_currentStructureSetId = ss.Id;
                     ui.Invoke(() =>
@@ -191,60 +194,18 @@ namespace ESAPIScript
         {
             get
             {
-                return new DelegateCommand(doSomething); 
+                return new DelegateCommand(DoWork);
             }
         }
 
-        private async void doSomething(object obj = null)
+        private async void DoWork(object obj = null)
         {
+            // Sort the structures according to the selected structure
             structureIds = new SometimesObservableCollection<string>(Helpers.sortOptions(_selectedStructureId, structureIds));
-            double maxVolume = double.NaN;
-            IEnumerable<string> C = Enumerable.Empty<string>();
-            await ew.AsyncRunStructureContext((pat, ss, ui) =>
+            await ew.AsyncRunStructureContext((pat, ss) =>
             {
-                maxVolume = ss.Structures.Select(x => x.Volume).Aggregate((double)0, (vol, minVol) =>  vol > minVol ? vol : minVol );
-                C = pat.Courses.Where(x => x.PlanSetups.Any(y => y.StructureSet.Structures.Select(z=>z.Id).Contains("PTV"))).Select(x=>x.Id).ToList();
-                using (var sw = new StreamWriter("myData.txt"))
-                {
-                    sw.WriteLine(maxVolume.ToString());
-                    foreach (string courseId in C)
-                    {
-                        sw.WriteLine(courseId);
-                    }
-                    
-                }
+                // Do something in the ESAPI context
             });
-            MessageBox.Show(maxVolume.ToString());
-           
-        }
-
-        public ICommand StartCommand
-        {
-            get
-            {
-                return new DelegateCommand(Start);
-            }
-        }
-
-        public async void Start(object param = null)
-        {
-            if (working)
-            {
-                return;
-            }
-            CanLoadTemplates = false;
-            working = true;
-            var newstructures = new List<string>();
-            bool Done = await Task.Run(() => ew.AsyncRunStructureContext((p, S, ui) =>
-            {
-                // Do something with the structure set
-            }
-            ));
-
-            working = false;
-
-            CanLoadTemplates = true;
-
         }
 
         public void GetScriptConfigFromXML()

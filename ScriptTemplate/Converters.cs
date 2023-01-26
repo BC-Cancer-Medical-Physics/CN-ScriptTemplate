@@ -20,37 +20,12 @@ namespace ESAPIScript.Converters
         public object Convert(object[] value, Type targetType,
                object parameter, System.Globalization.CultureInfo culture)
         {
-            string init = (value[0] as string);
-            ObservableCollection<string> AvailableStructures = value[1] as ObservableCollection<string>;
-            if (init == null)
-            {
-                return AvailableStructures;
-            }
-            if (AvailableStructures.Count != 0)
-            {
-                double[] LD = new double[AvailableStructures.Count];
-                for (int i = 0; i < AvailableStructures.Count; i++)
-                {
-                    LD[i] = double.PositiveInfinity;
-                }
-                int c = 0;
-                foreach (string S in AvailableStructures)
-                {
-                    var CurrentId = init.ToUpper();
-                    var stripString = S.Replace(@"B_", @"").Replace(@"_", @"").ToUpper();
-                    var CompString = CurrentId.Replace(@"B_", @"").Replace(@"_", @"").ToUpper();
-                    double LDist = Helpers.LevenshteinDistance.Compute(stripString, CompString);
-                    if (stripString.ToUpper().Contains(CompString) && stripString != "" && CompString != "")
-                        LDist = Math.Min(LDist, 1.5);
-                    LD[c] = LDist;
-                    c++;
-                }
-                var temp = new ObservableCollection<string>(AvailableStructures.Zip(LD, (s, l) => new { key = s, LD = l }).OrderBy(x => x.LD).Select(x => x.key).ToList());
-                return temp;
-            }
-            else
-                return AvailableStructures;
+            string matchString = (value[0] as string);
+            ObservableCollection<string> AvailableOptions = value[1] as ObservableCollection<string>;
+            return Helpers.sortOptions(matchString, AvailableOptions);
         }
+
+        
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
