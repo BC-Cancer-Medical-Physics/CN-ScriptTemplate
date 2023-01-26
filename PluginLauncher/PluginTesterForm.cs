@@ -38,9 +38,10 @@ namespace PluginTester
             app = VMS.TPS.ESAPIApplication.Instance; // instantiate the ESAPI context
 
             // Can use this to seed the form if you have a standard test patient.
-            textBox_PID.Text = "CN_Optimate";
-            textBox_SSID.Text = "cervix1_clin";
-            textBox_CourseID.Text = "";
+            textBox_PID.Text = "CN_ESAPI201_pro1";
+            textBox_SSID.Text = "CT_pro1";
+            textBox_planId.Text = "proN_RO2C";
+            textBox_CourseID.Text = "Course1";
         }
 
 
@@ -63,8 +64,10 @@ namespace PluginTester
         {
             string PID = textBox_PID.Text;  // get the patient ID
             string CourseID = textBox_CourseID.Text;  // get the patient ID
+            string PlanID = textBox_planId.Text;
             string SSID = textBox_SSID.Text; // get the plan ID
             Patient p = null;
+            Course c = null;
             PlanSetup pl = null;
             StructureSet ss = null;
             try
@@ -76,18 +79,12 @@ namespace PluginTester
                     app.Context.ClosePatient();
                     return;
                 }
-                //Course c = p.Courses.FirstOrDefault(x => x.Id == CourseID);
-                //if (c == null)
-                //{
-                //    System.Windows.Forms.MessageBox.Show("Course not found!");
-                //    return;
-                //}
-                //pl = c.PlanSetups.FirstOrDefault(x => x.Id == planID);
-                //if (pl == null)
-                //{
-                //    System.Windows.Forms.MessageBox.Show("Course not found!");
-                //    return;
-                //}
+                c = p.Courses.FirstOrDefault(x => x.Id == CourseID);
+                if (c != null)
+                {
+                    pl = c.PlanSetups.FirstOrDefault(x => x.Id == PlanID);
+                    
+                }
                 ss = p.StructureSets.FirstOrDefault(x => string.Equals(x.Id, SSID, StringComparison.OrdinalIgnoreCase));
                 if (ss == null)
                 {
@@ -105,26 +102,36 @@ namespace PluginTester
             }
             try
             {
-
-                EsapiWorker ew = new EsapiWorker(p, ss); // write enabled for plan
-                Helpers.SeriLog.Initialize(app.Context.CurrentUser.Id);
-                DispatcherFrame frame = new DispatcherFrame();
-                RunOnNewStaThread(() =>
+                EsapiWorker ew = null;
+                if (pl != null)
+                    ew = new EsapiWorker(p, pl);
+                else if (ss != null)
+                    ew = new EsapiWorker(p, ss); // write enabled for plan
+                if (ew != null)
                 {
-                    // This method won't return until the window is closed
-                    InitializeAndStartMainWindow(ew);
+                    Helpers.SeriLog.Initialize(app.Context.CurrentUser.Id);
+                    DispatcherFrame frame = new DispatcherFrame();
+                    RunOnNewStaThread(() =>
+                    {
+                        // This method won't return until the window is closed
+                        InitializeAndStartMainWindow(ew);
 
-                    // End the queue so that the script can exit
-                    frame.Continue = false;
-                });
-                Dispatcher.PushFrame(frame);
-                
-                if (checkBox_save.Checked)
-                    app.Context.SaveModifications();
+                        // End the queue so that the script can exit
+                        frame.Continue = false;
+                    });
+                    Dispatcher.PushFrame(frame);
 
-                app.Context.ClosePatient();
+                    if (checkBox_save.Checked)
+                        app.Context.SaveModifications();
 
-                
+                    app.Context.ClosePatient();
+                }
+                else
+                    System.Windows.Forms.MessageBox.Show("The plan or structure set was not found.");
+
+
+
+
 
             }
             catch (Exception ex)

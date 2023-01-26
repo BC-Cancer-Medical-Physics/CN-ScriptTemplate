@@ -94,23 +94,20 @@
             this.label1.Size = new System.Drawing.Size(54, 13);
             this.label1.TabIndex = 7;
             this.label1.Text = "Course ID";
-            
             // 
             // textBox_CourseID
             // 
-            this.textBox_CourseID.Enabled = false;
             this.textBox_CourseID.Location = new System.Drawing.Point(100, 72);
             this.textBox_CourseID.Name = "textBox_CourseID";
             this.textBox_CourseID.Size = new System.Drawing.Size(164, 20);
             this.textBox_CourseID.TabIndex = 2;
-            
             // 
             // checkBox_save
             // 
             this.checkBox_save.AutoSize = true;
             this.checkBox_save.Location = new System.Drawing.Point(100, 185);
             this.checkBox_save.Name = "checkBox_save";
-            this.checkBox_save.Size = new System.Drawing.Size(127, 21);
+            this.checkBox_save.Size = new System.Drawing.Size(120, 17);
             this.checkBox_save.TabIndex = 9;
             this.checkBox_save.Text = "Save on completion";
             this.checkBox_save.UseVisualStyleBackColor = true;
@@ -123,16 +120,13 @@
             this.label3.Size = new System.Drawing.Size(42, 13);
             this.label3.TabIndex = 11;
             this.label3.Text = "Plan ID";
-            
             // 
             // textBox_planId
             // 
-            this.textBox_planId.Enabled = false;
             this.textBox_planId.Location = new System.Drawing.Point(100, 98);
             this.textBox_planId.Name = "textBox_planId";
             this.textBox_planId.Size = new System.Drawing.Size(164, 20);
             this.textBox_planId.TabIndex = 10;
-            
             // 
             // and
             // 
@@ -159,7 +153,6 @@
             this.label2.Size = new System.Drawing.Size(324, 99);
             this.label2.TabIndex = 8;
             this.label2.Text = resources.GetString("label2.Text");
-            
             // 
             // PluginTesterForm
             // 
