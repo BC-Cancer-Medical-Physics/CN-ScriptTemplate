@@ -30,10 +30,24 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="Active structure set:" FontSize="16" Margin="10,0,0,0"/>
-            <TextBlock Grid.Column="1" Text="{Binding currentStructureSetId, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="10,0,0,0"/>
+            <TextBlock Grid.Column="0" Text="Active structure set:" FontSize="16" Margin="10,0,0,0" VerticalAlignment="Center"/>
+            <TextBlock Grid.Column="1" Text="{Binding currentStructureSetId, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Foreground="DarkOrange" FontSize="16" Margin="10,0,0,0"/>
             <Button Grid.Column="2" Command="{Binding buttonCommand}" Margin="10,3,10,3">
-                <TextBlock Text="My Button" Margin="10,3,10,3"/>
+                <!--<TextBlock Text="My Button" Margin="10,3,10,3"/>-->
+                <TextBlock>
+                    <TextBlock.Text>My Button</TextBlock.Text>
+                    <TextBlock.Foreground>
+                        <SolidColorBrush Color="Red"/>
+                    </TextBlock.Foreground>
+                    <TextBlock.Style>
+                        <Style>
+                            <Style.Setters>
+                                <Setter Property="IsEnabled" Value="30"/>
+                            </Style.Setters>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+                
             </Button>
         </Grid>
         <Border Grid.Row="1" Background="CornflowerBlue" CornerRadius="4" HorizontalAlignment="Stretch" Margin="10,10,10,0" Height="5"/>
