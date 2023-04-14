@@ -16,6 +16,9 @@
         <converters:VisibilityConverter x:Key="VisibilityConverter"/>
         <converters:VisibilityInverseConverter x:Key="VisibilityInverseConverter"/>
         <converters:VisibilityMultiConverter x:Key="VisibilityMultiConverter"/>
+        <Style x:Key="TextBlockStyle1" TargetType="{x:Type TextBlock}">
+            <Setter Property="Foreground" Value="DarkSlateBlue"/>
+        </Style>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -30,24 +33,10 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="Active structure set:" FontSize="16" Margin="10,0,0,0" VerticalAlignment="Center"/>
+            <TextBlock Style="{DynamicResource TextBlockStyle1}" Grid.Column="0" Text="Active structure set:" FontSize="16" Margin="10,0,0,0" VerticalAlignment="Center"/>
             <TextBlock Grid.Column="1" Text="{Binding currentStructureSetId, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Foreground="DarkOrange" FontSize="16" Margin="10,0,0,0"/>
             <Button Grid.Column="2" Command="{Binding buttonCommand}" Margin="10,3,10,3">
-                <!--<TextBlock Text="My Button" Margin="10,3,10,3"/>-->
-                <TextBlock>
-                    <TextBlock.Text>My Button</TextBlock.Text>
-                    <TextBlock.Foreground>
-                        <SolidColorBrush Color="Red"/>
-                    </TextBlock.Foreground>
-                    <TextBlock.Style>
-                        <Style>
-                            <Style.Setters>
-                                <Setter Property="IsEnabled" Value="30"/>
-                            </Style.Setters>
-                        </Style>
-                    </TextBlock.Style>
-                </TextBlock>
-                
+                <TextBlock Text="My Button" Margin="10,3,10,3"/>
             </Button>
         </Grid>
         <Border Grid.Row="1" Background="CornflowerBlue" CornerRadius="4" HorizontalAlignment="Stretch" Margin="10,10,10,0" Height="5"/>
